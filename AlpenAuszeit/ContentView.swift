@@ -8,28 +8,40 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            CurrentView(
-                hotelViewModel: hotelViewModel,
-                weatherViewModel: weatherViewModel
-            )
+            NavigationView {
+                CurrentView(
+                    hotelViewModel: hotelViewModel,
+                    weatherViewModel: weatherViewModel
+                )
+                .navigationTitle("Aktuell")
+            }
             .tabItem {
                 Label("Aktuell", systemImage: "info.circle")
             }
             
-            HotelListView(viewModel: hotelViewModel)
-                .tabItem {
-                    Label("Hotel", systemImage: "building")
-                }
+            NavigationView {
+                HotelListView(viewModel: hotelViewModel)
+                    .navigationTitle("Hotels")
+            }
+            .tabItem {
+                Label("Hotel", systemImage: "building")
+            }
             
-            TripListView(viewModel: tripViewModel)
-                .tabItem {
-                    Label("Fahrten", systemImage: "tram")
-                }
+            NavigationView {
+                TripListView(viewModel: tripViewModel)
+                    .navigationTitle("Fahrten")
+            }
+            .tabItem {
+                Label("Fahrten", systemImage: "tram")
+            }
             
-            HikingListView(viewModel: hikingViewModel)
-                .tabItem {
-                    Label("Wanderungen", systemImage: "mountain.2")
-                }
+            NavigationView {
+                HikingListView(viewModel: hikingViewModel)
+                    .navigationTitle("Wanderungen")
+            }
+            .tabItem {
+                Label("Wanderungen", systemImage: "mountain.2")
+            }
             
             Text("Aktivitäten folgen noch")
                 .tabItem {

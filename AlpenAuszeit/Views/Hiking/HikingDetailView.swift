@@ -1,4 +1,5 @@
 import SwiftUI
+import WebKit
 
 struct HikingDetailView: View {
     let hike: Hike
@@ -44,11 +45,10 @@ struct HikingDetailView: View {
                 
                 Divider()
                 
-                // Bergfex Einbettung (in einer echten App würde hier ein WebView verwendet)
-                Link(destination: hike.infoLink) {
+                NavigationLink(destination: BergfexFullView(url: hike.infoLink, hikeName: hike.name)) {
                     HStack {
                         Image(systemName: "safari")
-                        Text("Auf Bergfex ansehen")
+                        Text("Bergfex Informationen anzeigen")
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -61,5 +61,26 @@ struct HikingDetailView: View {
         }
         .navigationTitle("Wanderdetails")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// Separate Vollbildansicht für Bergfex-Inhalte als eigenständige Ansicht in der Navigation
+struct BergfexFullView: View {
+    let url: URL
+    let hikeName: String
+    
+    var body: some View {
+        WebView(url: url)
+            .edgesIgnoringSafeArea(.bottom)
+            .navigationTitle("Bergfex: \(hikeName)")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    HStack {
+                        Image(systemName: "mountain.2")
+                        Text("Bergfex")
+                    }
+                }
+            }
     }
 }

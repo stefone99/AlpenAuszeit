@@ -80,28 +80,11 @@ struct HotelDetailView: View {
                         Text("Standort")
                             .font(.headline)
                         
-                        Map(coordinateRegion: .constant(MKCoordinateRegion(
-                            center: hotel.coordinates,
-                            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-                        )), annotationItems: [hotel]) { hotel in
-                            MapMarker(coordinate: hotel.coordinates, tint: .red)
-                        }
-                        .frame(height: 200)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        
-                        Button(action: {
-                            UIApplication.shared.open(hotel.mapLink)
-                        }) {
-                            HStack {
-                                Image(systemName: "map")
-                                Text("In Google Maps öffnen")
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                        }
+                        // Verbesserte Kartenansicht mit Interaktionen
+                        EnhancedMapView(
+                            coordinates: hotel.coordinates,
+                            title: hotel.name
+                        )
                     }
                 }
                 .padding(.horizontal)

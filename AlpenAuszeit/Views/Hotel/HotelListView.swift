@@ -7,21 +7,24 @@ struct HotelListView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Unterkünfte")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                
+                Text("Tippen Sie auf ein Hotel für weitere Informationen")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
                     .padding(.horizontal)
                 
-                ForEach(viewModel.hotels) { hotel in
-                    NavigationLink(destination: HotelDetailView(hotel: hotel, viewModel: viewModel)) {
-                        HotelCard(hotel: hotel, viewModel: viewModel)
-                            .padding(.horizontal)
+                LazyVStack(spacing: 16) {
+                    ForEach(viewModel.hotels) { hotel in
+                        NavigationLink(destination: HotelDetailView(hotel: hotel, viewModel: viewModel)) {
+                            HotelCard(hotel: hotel, viewModel: viewModel)
+                                .padding(.horizontal)
+                        }
+                        .buttonStyle(PlainButtonStyle())
                     }
-                    .buttonStyle(PlainButtonStyle())
                 }
+                .padding(.top, 8)
             }
             .padding(.vertical)
         }
-        .navigationTitle("Hotels")
     }
 }

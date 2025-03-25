@@ -4,6 +4,7 @@ import MapKit
 struct HotelCard: View {
     let hotel: Hotel
     @ObservedObject var viewModel: HotelViewModel
+    @State private var showingMapSheet = false
     
     var body: some View {
         ZStack {
@@ -33,8 +34,16 @@ struct HotelCard: View {
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 
                 VStack(alignment: .leading, spacing: 5) {
-                    Text(hotel.name)
-                        .font(.headline)
+                    HStack {
+                        Text(hotel.name)
+                            .font(.headline)
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.gray)
+                            .font(.caption)
+                    }
                     
                     Text(hotel.location)
                         .font(.subheadline)
@@ -49,7 +58,7 @@ struct HotelCard: View {
                     .foregroundColor(.secondary)
                     
                     Button(action: {
-                        UIApplication.shared.open(hotel.mapLink)
+                        showingMapSheet = true
                     }) {
                         HStack {
                             Image(systemName: "map")
@@ -57,6 +66,30 @@ struct HotelCard: View {
                         }
                         .font(.caption)
                         .foregroundColor(.blue)
+                    }
+                    .sheet(isPresented: $showingMapSheet) {
+                        VStack {
+                            HStack {
+                                Text(hotel.name)
+                                    .font(.headline)
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    showingMapSheet = false
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            .padding()
+                            
+                            EnhancedMapView(
+                                coordinates: hotel.coordinates,
+                                title: hotel.name
+                            )
+                            .padding(.horizontal)
+                        }
                     }
                 }
                 .padding(.horizontal, 10)

@@ -6,11 +6,7 @@ struct HikingListView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Wanderungen")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
-                
+                // Nur ein einleitender Text, kein Haupttitel mehr
                 Text("Entdecken Sie die schönsten Wanderungen in Tirol")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -26,6 +22,5 @@ struct HikingListView: View {
             }
             .padding(.vertical)
         }
-        .navigationTitle("Wanderungen")
     }
 }

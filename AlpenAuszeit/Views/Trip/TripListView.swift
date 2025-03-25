@@ -6,10 +6,6 @@ struct TripListView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Fahrten")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
                 
                 ForEach(viewModel.trips) { trip in
                     TripCard(trip: trip, viewModel: viewModel)
@@ -18,6 +14,5 @@ struct TripListView: View {
             }
             .padding(.vertical)
         }
-        .navigationTitle("Fahrten")
     }
 }
