@@ -12,14 +12,13 @@ struct MapLocation: Identifiable {
 enum MapDisplayType: String, Hashable, CaseIterable {
     case standard = "Standard"
     case satellite = "Satellit"
-    case hybrid3D = "3D-Satellit"
 }
 
-// Verbesserte Kartenansicht mit Interaktionen und Kartentyp-Umschalter
+// Verbesserte Kartenansicht mit Interaktionen und vereinfachtem Kartentyp-Umschalter
 struct EnhancedMapView: View {
     let coordinates: CLLocationCoordinate2D
     let title: String
-    @State private var selectedMapType: MapDisplayType = .hybrid3D
+    @State private var selectedMapType: MapDisplayType = .satellite
     
     // Konvertiere unseren benutzerdefinierten Typ in einen MapStyle
     private func getMapStyle() -> MapStyle {
@@ -28,8 +27,6 @@ struct EnhancedMapView: View {
             return .standard
         case .satellite:
             return .hybrid(elevation: .realistic, pointsOfInterest: .all)
-        case .hybrid3D:
-            return .hybrid(elevation: .realistic, pointsOfInterest: .all, showsTraffic: true)
         }
     }
     
@@ -52,7 +49,7 @@ struct EnhancedMapView: View {
             .frame(height: 270)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             
-            // Kartentyp-Umschalter
+            // Vereinfachter Kartentyp-Umschalter
             Picker("Kartenansicht", selection: $selectedMapType) {
                 ForEach(MapDisplayType.allCases, id: \.self) { type in
                     Text(type.rawValue).tag(type)

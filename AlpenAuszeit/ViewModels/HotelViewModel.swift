@@ -28,6 +28,8 @@ class HotelViewModel: ObservableObject {
                 location: "Wien",
                 checkIn: dateFormatter.date(from: "26.04.25")!,
                 checkOut: dateFormatter.date(from: "28.04.25")!,
+                checkInTime: "15:00",
+                checkOutTime: "14:00",
                 boardType: "Frühstück",
                 mapLink: URL(string: "https://maps.app.goo.gl/2EMHkLRy7928jGqHA")!,
                 images: [
@@ -37,13 +39,15 @@ class HotelViewModel: ObservableObject {
                     "https://image-tc.galaxy.tf/wijpeg-dbv01cu0f5a8dmd4xnwp7svdd/flemings-selection-hotel-wien-city-zimmer-superior-king-master-01.jpg",
                     "https://image-tc.galaxy.tf/wijpeg-7lsmieae2bgxee8qjfb2skk4l/flemings-selection-hotel-wien-city-wellness.jpg"
                 ],
-                coordinates: CLLocationCoordinate2D(latitude: 48.209467154720556, longitude: 16.35398777811556)
+                coordinates: CLLocationCoordinate2D(latitude: 48.2083, longitude: 16.3583)
             ),
             Hotel(
                 name: "Alpenhotel Kaiserfels",
                 location: "St. Johann in Tirol",
                 checkIn: dateFormatter.date(from: "28.04.25")!,
                 checkOut: dateFormatter.date(from: "05.05.25")!,
+                checkInTime: "15:00",
+                checkOutTime: "11:00",
                 boardType: "Halbpension",
                 mapLink: URL(string: "https://maps.app.goo.gl/dPGPqFvoynLcnUEy8")!,
                 images: [
@@ -60,13 +64,15 @@ class HotelViewModel: ObservableObject {
                     "https://www.kaiserfels.com/userdata/6068/gallery/9304/thumbnails/img_6125_2000x1329.jpg",
                     "https://www.kaiserfels.com/userdata/6068/gallery/9304/thumbnails/dscf8945_2000x1329.jpg"
                 ],
-                coordinates: CLLocationCoordinate2D(latitude: 47.51556, longitude: 12.44808)
+                coordinates: CLLocationCoordinate2D(latitude: 47.5226, longitude: 12.4256)
             ),
             Hotel(
                 name: "Amber Hotel Bavaria",
                 location: "Bad Reichenhall",
                 checkIn: dateFormatter.date(from: "05.05.25")!,
                 checkOut: dateFormatter.date(from: "10.05.25")!,
+                checkInTime: "16:00",
+                checkOutTime: "11:00",
                 boardType: "Frühstück",
                 mapLink: URL(string: "https://maps.app.goo.gl/hrgPMwv4TamHQgt6A")!,
                 images: [
@@ -78,7 +84,7 @@ class HotelViewModel: ObservableObject {
                     "https://www.amber-hotels.de/wp-content/uploads/sites/2/2022/08/gradierwerk-2-1920x1080.jpg",
                     "https://cdn.amber-hotels.de/wp-content/uploads/sites/2/2024/05/sauna1-scaled.jpeg"
                 ],
-                coordinates: CLLocationCoordinate2D(latitude: 47.73150, longitude: 12.88591)
+                coordinates: CLLocationCoordinate2D(latitude: 47.7275, longitude: 12.8777)
             )
         ]
     }

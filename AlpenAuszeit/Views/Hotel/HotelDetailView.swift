@@ -55,6 +55,9 @@ struct HotelDetailView: View {
                             Text("Check-in")
                                 .font(.headline)
                             Text(viewModel.formattedDate(from: hotel.checkIn))
+                            Text("ab \(hotel.checkInTime) Uhr")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                         }
                         
                         Spacer()
@@ -63,6 +66,9 @@ struct HotelDetailView: View {
                             Text("Check-out")
                                 .font(.headline)
                             Text(viewModel.formattedDate(from: hotel.checkOut))
+                            Text("bis \(hotel.checkOutTime) Uhr")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                         }
                     }
                     

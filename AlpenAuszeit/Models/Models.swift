@@ -7,6 +7,8 @@ struct Hotel: Identifiable {
     let location: String
     let checkIn: Date
     let checkOut: Date
+    let checkInTime: String
+    let checkOutTime: String
     let boardType: String
     let mapLink: URL
     let images: [String]
