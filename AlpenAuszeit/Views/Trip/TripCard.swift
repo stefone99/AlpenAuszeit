@@ -17,8 +17,14 @@ struct TripCard: View {
                     
                     Spacer()
                     
-                    Image(systemName: "train.side.front.car")
-                        .foregroundColor(.blue)
+                    HStack(spacing: 4) {
+                        Image(systemName: "train.side.front.car")
+                            .foregroundColor(.blue)
+                        
+                        Text("\(trip.stations.count) Stationen")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
                 
                 Divider()
@@ -48,6 +54,16 @@ struct TripCard: View {
                         Text(trip.to)
                             .font(.subheadline)
                     }
+                }
+                
+                HStack {
+                    Spacer()
+                    Text("Details anzeigen")
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundColor(.blue)
                 }
             }
             .padding()

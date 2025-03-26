@@ -22,6 +22,15 @@ struct Trip: Identifiable {
     let arrivalTime: String
     let from: String
     let to: String
+    let stations: [TripStation]
+}
+
+struct TripStation: Identifiable {
+    let id = UUID()
+    let time: String
+    let location: String
+    let platform: String
+    let isTransfer: Bool
 }
 
 struct Hike: Identifiable {
