@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Die App benötigt Ihren Standort, um aktuelle Wetterdaten für Ihren Aufenthaltsort anzuzeigen.</string>
+
+    <key>NSLocationUsageDescription</key>
+    <string>Die App benötigt Ihren Standort, um aktuelle Wetterdaten für Ihren Aufenthaltsort anzuzeigen.</string>
+
+    <key>WeatherKitUsageDescription</key>
+    <string>Die App verwendet WeatherKit, um aktuelle Wetterdaten für Ihren Aufenthaltsort und Reiseziele anzuzeigen.</string>
+</dict>
+</plist>

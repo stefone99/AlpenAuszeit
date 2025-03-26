@@ -25,6 +25,7 @@ struct ContentView: View {
                     weatherViewModel: weatherViewModel
                 )
                 .navigationTitle("Aktuell")
+                // Toolbar ohne Reload-Button
             }
             .tabItem {
                 Label("Aktuell", systemImage: "info.circle")

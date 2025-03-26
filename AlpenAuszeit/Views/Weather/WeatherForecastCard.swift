@@ -25,7 +25,7 @@ struct WeatherForecastCard: View {
                     .font(.system(size: 30))
                     .foregroundColor(.white)
                 
-                Text("\(String(format: "%.1f", weather.temperature))°C")
+                Text("\(Int(weather.temperature))°C")
                     .font(.headline)
                     .fontWeight(.bold)
                     .foregroundColor(.white)

@@ -67,4 +67,15 @@ enum WeatherCondition: String {
         case .partlyCloudy: return "Teilweise bewölkt"
         }
     }
+    
+    // Optimiert für Apple SF Symbols, die von WeatherKit verwendet werden
+    var iconName: String {
+        switch self {
+        case .sunny: return "sun.max.fill"
+        case .cloudy: return "cloud.fill"
+        case .rainy: return "cloud.rain.fill"
+        case .snowy: return "cloud.snow.fill"
+        case .partlyCloudy: return "cloud.sun.fill"
+        }
+    }
 }
