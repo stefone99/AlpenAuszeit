@@ -20,8 +20,11 @@ struct CurrentView: View {
                             .font(.headline)
                             .padding(.horizontal)
                         
-                        HotelCard(hotel: currentHotel, viewModel: hotelViewModel)
-                            .padding(.horizontal)
+                        NavigationLink(destination: HotelDetailView(hotel: currentHotel, viewModel: hotelViewModel)) {
+                            HotelCard(hotel: currentHotel, viewModel: hotelViewModel)
+                                .padding(.horizontal)
+                        }
+                        .buttonStyle(PlainButtonStyle())
                     }
                 } else {
                     Text("Keine aktuelle Unterkunft gefunden")

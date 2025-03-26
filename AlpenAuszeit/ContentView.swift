@@ -1,10 +1,21 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject private var locationManager: LocationManager
     @StateObject private var hotelViewModel = HotelViewModel()
     @StateObject private var tripViewModel = TripViewModel()
     @StateObject private var hikingViewModel = HikingViewModel()
-    @StateObject private var weatherViewModel = WeatherViewModel()
+    
+    // Wetter-ViewModel mit dem LocationManager initialisieren
+    @StateObject private var weatherViewModel: WeatherViewModel
+    
+    // Initialisierer für die ViewModel-Erstellung mit dem LocationManager
+    init() {
+        // Da wir @EnvironmentObject erst in der View haben, müssen wir einen
+        // temporären LocationManager für die Initialisierung erstellen
+        let tempLocationManager = LocationManager()
+        _weatherViewModel = StateObject(wrappedValue: WeatherViewModel(locationManager: tempLocationManager))
+    }
     
     var body: some View {
         TabView {
@@ -49,6 +60,16 @@ struct ContentView: View {
                 }
         }
         .accentColor(.blue)
+        .onAppear {
+            // Nach dem Erscheinen der View den LocationManager aktualisieren
+            weatherViewModel.locationManager = locationManager
+            
+            // Standortaktualisierung anfordern
+            if locationManager.authorizationStatus == .authorizedWhenInUse ||
+               locationManager.authorizationStatus == .authorizedAlways {
+                locationManager.requestLocation()
+            }
+        }
     }
 }
 
@@ -56,5 +77,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(LocationManager())
     }
 }

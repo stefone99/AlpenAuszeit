@@ -6,10 +6,6 @@ struct TripListView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Ihre Fahrten")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
                 
                 Text("Tippen Sie auf eine Fahrt für Details")
                     .font(.subheadline)

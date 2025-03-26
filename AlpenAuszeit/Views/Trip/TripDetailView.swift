@@ -39,6 +39,7 @@ struct TripDetailView: View {
                         .fill(Color(UIColor.systemBackground))
                         .shadow(radius: 2)
                 )
+                .padding(.horizontal)
                 
                 Divider()
                     .padding(.vertical, 5)
@@ -96,6 +97,7 @@ struct TripDetailView: View {
                                     Text(station.time)
                                         .font(.headline)
                                         .foregroundColor(isFirst || isLast ? .blue : .primary)
+                                        .frame(width: 60, alignment: .leading)
                                     
                                     if station.isTransfer {
                                         Text("Umstieg")
