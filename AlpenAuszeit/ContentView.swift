@@ -5,6 +5,7 @@ struct ContentView: View {
     @StateObject private var hotelViewModel = HotelViewModel()
     @StateObject private var tripViewModel = TripViewModel()
     @StateObject private var hikingViewModel = HikingViewModel()
+    @StateObject private var climbingViewModel = ClimbingViewModel()
     
     // Wetter-ViewModel mit dem LocationManager initialisieren
     @StateObject private var weatherViewModel: WeatherViewModel
@@ -55,10 +56,13 @@ struct ContentView: View {
                 Label("Wanderungen", systemImage: "mountain.2")
             }
             
-            Text("Aktivitäten folgen noch")
-                .tabItem {
-                    Label("Aktivitäten", systemImage: "figure.hiking")
-                }
+            NavigationView {
+                ClimbingListView(viewModel: climbingViewModel)
+                    .navigationTitle("Klettersteige")
+            }
+            .tabItem {
+                Label("Klettersteige", systemImage: "figure.climbing")
+            }
         }
         .accentColor(.blue)
         .onAppear {

@@ -79,3 +79,17 @@ enum WeatherCondition: String {
         }
     }
 }
+
+// Neue Struktur für Klettersteige
+struct ClimbingRoute: Identifiable {
+    let id = UUID()
+    let name: String
+    let difficulty: String
+    let climbingHeight: String
+    let totalHeight: String
+    let climbingTime: String
+    let totalTime: String
+    let approachTime: String
+    let descentTime: String
+    let character: String
+}
