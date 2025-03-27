@@ -92,4 +92,7 @@ struct ClimbingRoute: Identifiable {
     let approachTime: String
     let descentTime: String
     let character: String
+    let topoImageURL: URL // Topografiebild
+    let coordinates: CLLocationCoordinate2D // Standort für die Karte
+    let location: String // Ortsname
 }

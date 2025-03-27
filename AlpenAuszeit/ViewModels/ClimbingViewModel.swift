@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocation
 
 class ClimbingViewModel: ObservableObject {
     @Published var climbingRoutes: [ClimbingRoute] = []
@@ -18,7 +19,10 @@ class ClimbingViewModel: ObservableObject {
                 totalTime: "3:00 Std.",
                 approachTime: "1:00 Std.",
                 descentTime: "1:30 Std.",
-                character: "Kurzer, steiler Steig durch die breite Felswand des Niederkaisers; ideal als Einstiegstour."
+                character: "Kurzer, steiler Steig durch die breite Felswand des Niederkaisers; ideal als Einstiegstour.",
+                topoImageURL: URL(string: "https://www.bergsteigen.com/fileadmin/userdaten/import/topos/maiklsteig_st_johann_topo_0.jpg")!,
+                coordinates: CLLocationCoordinate2D(latitude: 47.537891767165114, longitude: 12.402658586736543),
+                location: "St. Johann in Tirol"
             ),
             ClimbingRoute(
                 name: "Übungsklettersteig Ellmau",
@@ -29,7 +33,10 @@ class ClimbingViewModel: ObservableObject {
                 totalTime: "1:35 Std.",
                 approachTime: "0:40 Min.",
                 descentTime: "0:40 Min.",
-                character: "Kurzweiliges Übungserlebnis an einem kleinen Felsblock; kombinierbar mit Aufstieg zum Baumgartenkopf."
+                character: "Kurzweiliges Übungserlebnis an einem kleinen Felsblock; kombinierbar mit Aufstieg zum Baumgartenkopf.",
+                topoImageURL: URL(string: "https://www.bergsteigen.com/fileadmin/userdaten/import/topos/uebungsklettersteig_ellmau_topo.jpg")!,
+                coordinates: CLLocationCoordinate2D(latitude: 47.54121833989156, longitude: 12.319629724330536),
+                location: "Ellmau"
             ),
             ClimbingRoute(
                 name: "Adolari Klettersteig",
@@ -40,7 +47,10 @@ class ClimbingViewModel: ObservableObject {
                 totalTime: "1:15 Std.",
                 approachTime: "0:15 Min.",
                 descentTime: "0:15 Min.",
-                character: "Kurzer Steig oberhalb des Kirchleins St. Adolari, der an einem Klettergarten vorbeiführt; auch bei unsicherem Wetter interessant."
+                character: "Kurzer Steig oberhalb des Kirchleins St. Adolari, der an einem Klettergarten vorbeiführt; auch bei unsicherem Wetter interessant.",
+                topoImageURL: URL(string: "https://www.bergsteigen.com/fileadmin/userdaten/import/topos/adolari_klettersteig_topo_0.png")!,
+                coordinates: CLLocationCoordinate2D(latitude: 47.55617267425543, longitude: 12.564997482001065),
+                location: "St. Ulrich am Pillersee"
             ),
             ClimbingRoute(
                 name: "Zahme Gams Klettersteig",
@@ -51,7 +61,10 @@ class ClimbingViewModel: ObservableObject {
                 totalTime: "1:05 Std.",
                 approachTime: "0:10 Min.",
                 descentTime: "0:20 Min.",
-                character: "Lohnender Anfängerstieg in Weißbach bei Lofer, verläuft im AV-Klettergarten – familienfreundlich."
+                character: "Lohnender Anfängerstieg in Weißbach bei Lofer, verläuft im AV-Klettergarten – familienfreundlich.",
+                topoImageURL: URL(string: "https://www.bergsteigen.com/fileadmin/userdaten/tour/bilder/zahme-gams-klettersteig-topo.png")!,
+                coordinates: CLLocationCoordinate2D(latitude: 47.52336094735768, longitude: 12.753019355586636),
+                location: "Weißbach bei Lofer"
             ),
             ClimbingRoute(
                 name: "Gams Kitz Klettersteig",
@@ -62,7 +75,10 @@ class ClimbingViewModel: ObservableObject {
                 totalTime: "1:00 Std.",
                 approachTime: "0:10 Min.",
                 descentTime: "0:20 Min.",
-                character: "Klassischer Einsteigersteig in Weißbach bei Lofer, ideal um erste Erfahrungen mit Stahlseilen zu sammeln."
+                character: "Klassischer Einsteigersteig in Weißbach bei Lofer, ideal um erste Erfahrungen mit Stahlseilen zu sammeln.",
+                topoImageURL: URL(string: "https://www.bergsteigen.com/fileadmin/userdaten/tour/topo/23537/gams-kitz-klettersteig-weissbach-lofer-topo.png")!,
+                coordinates: CLLocationCoordinate2D(latitude: 47.51972849164876, longitude: 12.756540497916387),
+                location: "Weißbach bei Lofer"
             ),
             ClimbingRoute(
                 name: "Grünstein Klettersteig mit Var. Isidor",
@@ -73,7 +89,10 @@ class ClimbingViewModel: ObservableObject {
                 totalTime: "5:00 Std.",
                 approachTime: "0:45 Min.",
                 descentTime: "1:15 Std.",
-                character: "Anspruchsvoller Steig über dem Königssee mit mehreren Varianten, spektakulären Aussichten und technisch fordernden Passagen."
+                character: "Anspruchsvoller Steig über dem Königssee mit mehreren Varianten, spektakulären Aussichten und technisch fordernden Passagen.",
+                topoImageURL: URL(string: "https://www.bergsteigen.com/fileadmin/userdaten/tour/topo/7778/gruenstein_klettersteig_topo.png")!,
+                coordinates: CLLocationCoordinate2D(latitude: 47.591545233318186, longitude: 12.972755230891455),
+                location: "Schönau am Königssee"
             ),
             ClimbingRoute(
                 name: "Schützensteig Klettersteig – Jenner",
@@ -84,7 +103,10 @@ class ClimbingViewModel: ObservableObject {
                 totalTime: "3:00 Std.",
                 approachTime: "1:30 Std.",
                 descentTime: "1:00 Std.",
-                character: "Origineller und lohnender Einsteigersteig mit perfektem Ausblick auf Watzmann, Berchtesgaden und den Königssee; auch familiengeeignet."
+                character: "Origineller und lohnender Einsteigersteig mit perfektem Ausblick auf Watzmann, Berchtesgaden und den Königssee; auch familiengeeignet.",
+                topoImageURL: URL(string: "https://www.bergsteigen.com/fileadmin/userdaten/tour/topo/22892/laxersteig-schuetzensteig-klettersteig-jenner-topo.png")!,
+                coordinates: CLLocationCoordinate2D(latitude: 47.580331866500295, longitude: 13.024610835980944),
+                location: "Schönau am Königssee"
             ),
             ClimbingRoute(
                 name: "Laxersteig Klettersteig – Jenner",
@@ -95,8 +117,33 @@ class ClimbingViewModel: ObservableObject {
                 totalTime: "3:00 Std.",
                 approachTime: "1:30 Std.",
                 descentTime: "1:00 Std.",
-                character: "Längere Ferrata-Kombination am Jenner, die tiefer beginnt als der Schützensteig und durch steile, glatte Felspassagen führt – anspruchsvoll an bestimmten Stellen."
+                character: "Längere Ferrata-Kombination am Jenner, die tiefer beginnt als der Schützensteig und durch steile, glatte Felspassagen führt – anspruchsvoll an bestimmten Stellen.",
+                topoImageURL: URL(string: "https://www.bergsteigen.com/fileadmin/userdaten/tour/topo/22892/laxersteig-schuetzensteig-klettersteig-jenner-topo.png")!,
+                coordinates: CLLocationCoordinate2D(latitude: 47.58034634089606, longitude: 13.024213869083074),
+                location: "Schönau am Königssee"
             )
         ]
+    }
+    
+    // Funktion, um Klettersteige nach Standort zu gruppieren
+    func routesByLocation() -> [String: [ClimbingRoute]] {
+        Dictionary(grouping: climbingRoutes) { $0.location }
+    }
+    
+    // Benutzerdefinierte Sortierreihenfolge für Orte
+    func locationSortOrder(_ location: String) -> Int {
+        let orderList = [
+            "St. Johann in Tirol",
+            "Ellmau",
+            "St. Ulrich am Pillersee",
+            "Weißbach bei Lofer",
+            "Schönau am Königssee"
+        ]
+        
+        if let index = orderList.firstIndex(of: location) {
+            return index
+        }
+        // Nicht definierte Orte ans Ende setzen
+        return 999
     }
 }
