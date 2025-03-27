@@ -95,4 +95,5 @@ struct ClimbingRoute: Identifiable {
     let topoImageURL: URL // Topografiebild
     let coordinates: CLLocationCoordinate2D // Standort für die Karte
     let location: String // Ortsname
+    let infoLink: URL? // Bergfex-Link
 }

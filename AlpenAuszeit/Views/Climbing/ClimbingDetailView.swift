@@ -73,7 +73,7 @@ struct ClimbingDetailView: View {
                 
                 Divider()
                 
-                // Topobild (anklickbar) - nun mit NavigationLink statt Sheet
+                // Topobild (anklickbar)
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Topo")
                         .font(.headline)
@@ -109,31 +109,25 @@ struct ClimbingDetailView: View {
                     }
                 }
                 
-                Divider()
-                
-                // Standortkarte
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Standort")
-                        .font(.headline)
+                // Bergfex-Link, falls vorhanden
+                if let infoLink = climbingRoute.infoLink {
+                    Divider()
                     
-                    // Standortkarte mit iOS 17 Syntax
-                    Map(initialPosition: .region(MKCoordinateRegion(
-                        center: climbingRoute.coordinates,
-                        span: MKCoordinateSpan(latitudeDelta: 0.015, longitudeDelta: 0.015)
-                    ))) {
-                        Marker(climbingRoute.name, coordinate: climbingRoute.coordinates)
-                            .tint(.red)
-                    }
-                    .frame(height: 200)
-                    .cornerRadius(12)
-                    
-                    Link(destination: URL(string: "maps://?ll=\(climbingRoute.coordinates.latitude),\(climbingRoute.coordinates.longitude)&q=\(climbingRoute.name)")!) {
-                        Label("In Apple Maps öffnen", systemImage: "map")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Weitere Informationen")
+                            .font(.headline)
+                        
+                        NavigationLink(destination: BergfexFullView(url: infoLink, hikeName: climbingRoute.name)) {
+                            HStack {
+                                Image(systemName: "safari")
+                                Text("Bergfex Informationen anzeigen")
+                            }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color.blue)
+                            .background(Color("bergfex_button"))
                             .foregroundColor(.white)
-                            .cornerRadius(8)
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                        }
                     }
                 }
             }
@@ -162,7 +156,7 @@ struct InfoColumnView: View {
     }
 }
 
-// Eigenständige Topo-Detailansicht, jetzt als navigierbare View
+// Eigenständige Topo-Detailansicht
 struct TopoDetailView: View {
     let imageURL: URL
     let routeName: String
@@ -268,7 +262,8 @@ struct ClimbingDetailView_Previews: PreviewProvider {
                     character: "Kurzer, steiler Steig durch die breite Felswand des Niederkaisers; ideal als Einstiegstour.",
                     topoImageURL: URL(string: "https://www.bergsteigen.com/fileadmin/userdaten/import/topos/maiklsteig_st_johann_topo_0.jpg")!,
                     coordinates: CLLocationCoordinate2D(latitude: 47.537891767165114, longitude: 12.402658586736543),
-                    location: "St. Johann in Tirol"
+                    location: "St. Johann in Tirol",
+                    infoLink: URL(string: "https://www.bergfex.at/sommer/tirol/touren/wanderung/3789911,maiklsteig/")
                 )
             )
         }

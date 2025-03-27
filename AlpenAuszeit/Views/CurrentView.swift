@@ -9,7 +9,7 @@ struct CurrentView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Willkommen zu Ihrem Urlaub in Östirol!")
+                Text("Willkommen zur AlpenAuszeit!")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.horizontal)

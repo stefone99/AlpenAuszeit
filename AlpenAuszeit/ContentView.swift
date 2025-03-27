@@ -107,7 +107,6 @@ struct ContentView: View {
                     hotelViewModel: hotelViewModel,
                     weatherViewModel: weatherViewModel
                 )
-                .navigationTitle("Aktuell")
             }
             .tabItem {
                 Image(systemName: "info.circle")
@@ -120,7 +119,7 @@ struct ContentView: View {
             }
             .tabItem {
                 Image(systemName: "building")
-                Text("Hotel")
+                Text("Hotels")
             }
             
             NavigationView {

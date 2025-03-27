@@ -52,7 +52,7 @@ struct HikingDetailView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
+                    .background(Color("bergfex_button"))
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
@@ -82,5 +82,6 @@ struct BergfexFullView: View {
                     }
                 }
             }
+            .padding(.bottom, 10)
     }
 }
