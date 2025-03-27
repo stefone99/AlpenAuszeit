@@ -114,13 +114,16 @@ struct ClimbingDetailView: View {
                     Divider()
                     
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Weitere Informationen")
+                        Text("Wanderung Informationen")
                             .font(.headline)
                         
                         NavigationLink(destination: BergfexFullView(url: infoLink, hikeName: climbingRoute.name)) {
                             HStack {
-                                Image(systemName: "safari")
-                                Text("Bergfex Informationen anzeigen")
+                                Image("bergfex_logo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 24)
+                                Text("Informationen anzeigen")
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
