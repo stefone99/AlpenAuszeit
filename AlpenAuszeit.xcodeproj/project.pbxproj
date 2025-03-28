@@ -15,29 +15,17 @@
 		FACEE62D2D928B82009AEE81 /* Exceptions for "AlpenAuszeit" folder in "AlpenAuszeit" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				ViewModels/ActivityViewModel.swift,
 				Views/Hotel/Map.swift,
 			);
 			target = FACEE5FD2D928B0C009AEE81 /* AlpenAuszeit */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		FACEE62E2D928B8C009AEE81 /* Exceptions for "AlpenAuszeit" folder in "Copy Bundle Resources" phase from "AlpenAuszeit" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = FACEE5FC2D928B0C009AEE81 /* Resources */;
-			membershipExceptions = (
-				ViewModels/ActivityViewModel.swift,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		FACEE6002D928B0C009AEE81 /* AlpenAuszeit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				FACEE62D2D928B82009AEE81 /* Exceptions for "AlpenAuszeit" folder in "AlpenAuszeit" target */,
-				FACEE62E2D928B8C009AEE81 /* Exceptions for "AlpenAuszeit" folder in "Copy Bundle Resources" phase from "AlpenAuszeit" target */,
 			);
 			path = AlpenAuszeit;
 			sourceTree = "<group>";

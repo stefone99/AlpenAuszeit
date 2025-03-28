@@ -91,6 +91,31 @@ struct HotelDetailView: View {
                             coordinates: hotel.coordinates,
                             title: hotel.name
                         )
+                        
+                        // Button für Wien-Aktivitäten (nur anzeigen, wenn das Hotel in Wien ist)
+                        if hotel.location == "Wien" {
+                            VStack(alignment: .leading, spacing: 8) {
+                                
+                                Divider()
+                                
+                                Text("Aktivitäten in Wien")
+                                    .font(.headline)
+                                
+                                NavigationLink(destination: ViennaActivityListView()) {
+                                    HStack {
+                                        Image(systemName: "mappin.and.ellipse")
+                                        Text("Jetzt entdecken")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(Color.blue)
+                                    .foregroundColor(.white)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                }
+                                .padding(.bottom, 15)
+                            }
+                            .padding(.top, 10)
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -98,5 +123,27 @@ struct HotelDetailView: View {
         }
         .navigationTitle("Hoteldetails")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct HotelDetailView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            HotelDetailView(
+                hotel: Hotel(
+                    name: "Flemings Selection Hotel Wien-City",
+                    location: "Wien",
+                    checkIn: Date(),
+                    checkOut: Date().addingTimeInterval(86400 * 2),
+                    checkInTime: "15:00",
+                    checkOutTime: "11:00",
+                    boardType: "Frühstück",
+                    mapLink: URL(string: "https://maps.apple.com")!,
+                    images: ["https://example.com/image.jpg"],
+                    coordinates: CLLocationCoordinate2D(latitude: 48.2082, longitude: 16.3738)
+                ),
+                viewModel: HotelViewModel()
+            )
+        }
     }
 }
