@@ -109,7 +109,7 @@ struct ContentView: View {
                 )
             }
             .tabItem {
-                Image(systemName: "info.circle")
+                Image(systemName: "house")
                 Text("Aktuell")
             }
             
