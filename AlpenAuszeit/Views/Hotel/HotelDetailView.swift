@@ -108,7 +108,7 @@ struct HotelDetailView: View {
                                     }
                                     .frame(maxWidth: .infinity)
                                     .padding()
-                                    .background(Color.blue)
+                                    .background(Color("activity_button"))
                                     .foregroundColor(.white)
                                     .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
