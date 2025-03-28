@@ -31,7 +31,7 @@ struct HotelCard: View {
                         EmptyView()
                     }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .cornerRadius(12, corners: [.topLeft, .topRight])
                 
                 VStack(alignment: .leading, spacing: 5) {
                     HStack {

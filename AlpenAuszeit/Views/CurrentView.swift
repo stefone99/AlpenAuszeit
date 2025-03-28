@@ -5,6 +5,8 @@ struct CurrentView: View {
     @ObservedObject var hotelViewModel: HotelViewModel
     @ObservedObject var weatherViewModel: WeatherViewModel
     @EnvironmentObject private var locationManager: LocationManager
+    @StateObject private var viennaActivityViewModel = ViennaActivityViewModel()
+    @State private var randomActivity: ViennaActivity?
     
     var body: some View {
         ScrollView {
@@ -17,7 +19,7 @@ struct CurrentView: View {
                 // Aktuelle Unterkunft
                 if let currentHotel = hotelViewModel.currentHotel {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Ihre aktuelle Unterkunft")
+                        Text("Aktuelle Unterkunft")
                             .font(.headline)
                             .padding(.horizontal)
                         
@@ -32,10 +34,108 @@ struct CurrentView: View {
                         .padding(.horizontal)
                 }
                 
+                // Zufällige Wien-Aktivität
+                if let activity = randomActivity {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Entdecke Wien")
+                            .font(.headline)
+                            .padding(.horizontal)
+                        
+                        NavigationLink(destination: ViennaActivityDetailView(activity: activity)) {
+                            VStack(spacing: 0) {
+                                // Aktivitätskarte
+                                ZStack(alignment: .bottom) {
+                                    // Bild mit Farbverlauf
+                                    if let imageURL = activity.imageURL {
+                                        ZStack(alignment: .bottom) {
+                                            AsyncImage(url: imageURL) { phase in
+                                                switch phase {
+                                                case .empty:
+                                                    Rectangle()
+                                                        .fill(activity.category.color.opacity(0.2))
+                                                        .frame(height: 180)
+                                                        .overlay(ProgressView())
+                                                case .success(let image):
+                                                    image
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fill)
+                                                        .frame(height: 180)
+                                                        .clipped()
+                                                case .failure:
+                                                    Rectangle()
+                                                        .fill(activity.category.color.opacity(0.2))
+                                                        .frame(height: 180)
+                                                        .overlay(
+                                                            Image(systemName: "photo")
+                                                                .font(.largeTitle)
+                                                                .foregroundColor(activity.category.color)
+                                                        )
+                                                @unknown default:
+                                                    EmptyView()
+                                                }
+                                            }
+                                            
+                                            // Text-Overlay mit Gradient
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                HStack {
+                                                    VStack(alignment: .leading, spacing: 4) {
+                                                        HStack {
+                                                            Text(activity.name)
+                                                                .font(.headline)
+                                                                .foregroundColor(.white)
+                                                            
+                                                            Spacer()
+                                                            
+                                                            Image(systemName: "chevron.right")
+                                                                .foregroundColor(.white.opacity(0.7))
+                                                                .font(.caption)
+                                                        }
+                                                        
+                                                        HStack {
+                                                            Image(systemName: activity.category.icon)
+                                                                .foregroundColor(.white)
+                                                            Text(activity.category.rawValue)
+                                                                .font(.caption)
+                                                                .foregroundColor(.white.opacity(0.9))
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 12)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .background(
+                                                LinearGradient(
+                                                    gradient: Gradient(colors: [Color.black.opacity(0.8), Color.black.opacity(0.3), Color.black.opacity(0.0)]),
+                                                    startPoint: .bottom,
+                                                    endPoint: .top
+                                                )
+                                            )
+                                        }
+                                    } else {
+                                        Rectangle()
+                                            .fill(activity.category.color.opacity(0.2))
+                                            .frame(height: 180)
+                                            .overlay(
+                                                Text(activity.name)
+                                                    .font(.headline)
+                                                    .foregroundColor(activity.category.color)
+                                            )
+                                    }
+                                }
+                            }
+                            .cornerRadius(12)
+                            .shadow(radius: 3)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .padding(.horizontal)
+                    }
+                }
+                
                 // Wetter-Status-Anzeige
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
-                        Text("Aktuelles Wetter")
+                        Text("Aktuelles Wetter Wien")
                             .font(.headline)
                         
                         Spacer()
@@ -62,7 +162,7 @@ struct CurrentView: View {
                 
                 // Wettervorhersage
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Wettervorhersage")
+                    Text("Wettervorhersage Wien")
                         .font(.headline)
                         .padding(.horizontal)
                     
@@ -107,6 +207,29 @@ struct CurrentView: View {
                 print("CurrentView: onAppear - Lade Wetterdaten für Standort: \(location.coordinate.latitude), \(location.coordinate.longitude)")
                 await weatherViewModel.fetchRealWeatherData(for: location)
             }
+            
+            // Zufällige Aktivität auswählen
+            selectRandomActivity()
+        }
+    }
+    
+    // Helfer-Methode zur Auswahl einer zufälligen Aktivität
+    private func selectRandomActivity() {
+        if !viennaActivityViewModel.activities.isEmpty {
+            randomActivity = viennaActivityViewModel.activities.randomElement()
+        }
+    }
+}
+
+// Preview
+struct CurrentView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            CurrentView(
+                hotelViewModel: HotelViewModel(),
+                weatherViewModel: WeatherViewModel(locationManager: LocationManager())
+            )
+            .environmentObject(LocationManager())
         }
     }
 }

@@ -66,7 +66,27 @@ struct ViennaActivityDetailView: View {
                     Text(activity.description)
                         .lineSpacing(5)
                     
-                    // Kein Aktionsbutton mehr
+                    Spacer(minLength: 5)
+                    
+                    Divider()
+                    
+                    // Google Maps Button
+                    Button(action: {
+                        openInGoogleMaps()
+                    }) {
+                        HStack {
+                            Image(systemName: "map")
+                                .font(.headline)
+                            Text("In Google Maps öffnen")
+                                .font(.headline)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                    }
+                    .padding(.bottom, 20)
                 }
                 .padding()
             }
@@ -74,6 +94,26 @@ struct ViennaActivityDetailView: View {
         .edgesIgnoringSafeArea(.top)
         .navigationTitle(activity.name)
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    // Funktion zum Öffnen von Google Maps mit dem Aktivitätsnamen und "Wien"
+    private func openInGoogleMaps() {
+        // URL-sichere Formatierung des Suchbegriffs
+        let searchQuery = "\(activity.name) Wien".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "Wien"
+        
+        // Versuchen, Google Maps App zu öffnen
+        let appURL = URL(string: "comgooglemaps://?q=\(searchQuery)")!
+        
+        // Fallback URL für den Browser, falls die App nicht installiert ist
+        let webURL = URL(string: "https://maps.google.com/maps?q=\(searchQuery)")!
+        
+        // Prüfen, ob die Google Maps App geöffnet werden kann
+        if UIApplication.shared.canOpenURL(appURL) {
+            UIApplication.shared.open(appURL, options: [:], completionHandler: nil)
+        } else {
+            // Ansonsten Browser-Version öffnen
+            UIApplication.shared.open(webURL, options: [:], completionHandler: nil)
+        }
     }
 }
 
