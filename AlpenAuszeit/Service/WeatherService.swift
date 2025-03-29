@@ -13,8 +13,13 @@ class WeatherService {
             // Weather Kit-Anfrage des Systems
             let weatherService = WeatherKit.WeatherService.shared
             
+            print("WeatherService: Starte Anfrage für Standort \(location.coordinate.latitude), \(location.coordinate.longitude)")
+            
             // Wetterdaten abrufen
+            print("WeatherService: Fordere aktuelle Wetterdaten an")
             let currentWeatherData = try await weatherService.weather(for: location)
+            
+            print("WeatherService: Fordere Vorhersagedaten an")
             let dailyForecast = try await weatherService.weather(for: location, including: .daily)
             
             // Ort mit Geocoder ermitteln
@@ -22,14 +27,17 @@ class WeatherService {
             var locationName = "Aktuelle Position"
             
             do {
+                print("WeatherService: Führe Geocoding für Standortnamen durch")
                 let placemarks = try await geocoder.reverseGeocodeLocation(location)
                 if let placemark = placemarks.first, let locality = placemark.locality {
                     locationName = locality
+                    print("WeatherService: Standortname ermittelt: \(locationName)")
                 } else if let placemark = placemarks.first, let name = placemark.name {
                     locationName = name
+                    print("WeatherService: Alternativer Standortname: \(locationName)")
                 }
             } catch {
-                print("Geocoding-Fehler: \(error.localizedDescription)")
+                print("WeatherService: Geocoding-Fehler: \(error.localizedDescription)")
             }
             
             // Aktuelle Wetterdaten extrahieren mit detailliertem Logging
@@ -39,15 +47,22 @@ class WeatherService {
             let symbolName = currentWeatherData.currentWeather.symbolName
             
             // Debug-Ausgabe der empfangenen Wetterdaten
-            print("Aktuelle Wetterdaten empfangen:")
+            print("WeatherService: Aktuelle Wetterdaten empfangen:")
             print("- Temperatur: \(tempValue) \(tempUnit)")
             print("- Symbol: \(symbolName)")
             print("- Standort: \(locationName)")
+            print("- Bedingung: \(currentWeatherData.currentWeather.condition.description)")
+            print("- Luftfeuchtigkeit: \(currentWeatherData.currentWeather.humidity)")
+            print("- Wind: \(currentWeatherData.currentWeather.wind.speed)")
+            
+            let condition = mapWeatherCondition(symbolName, temperature: tempValue, originalCondition: currentWeatherData.currentWeather.condition.description)
+            
+            print("WeatherService: Gemappte Wetterbedingung: \(condition.description)")
             
             let currentWeather = AlpenAuszeit.Weather(
                 date: Date(),
                 temperature: tempValue,
-                condition: mapWeatherCondition(symbolName, temperature: tempValue),
+                condition: condition,
                 location: locationName
             )
             
@@ -60,59 +75,107 @@ class WeatherService {
                 let lowTemp = day.lowTemperature
                 let avgTemp = (highTemp.value + lowTemp.value) / 2
                 let symbolName = day.symbolName
+                let originalCondition = day.condition.description
                 
                 // Debug-Ausgabe für jeden Vorhersagetag
-                print("Vorhersage für \(day.date):")
+                print("WeatherService: Vorhersage für \(day.date):")
                 print("- Min: \(lowTemp.value) \(lowTemp.unit)")
                 print("- Max: \(highTemp.value) \(highTemp.unit)")
                 print("- Symbol: \(symbolName)")
+                print("- Bedingung: \(originalCondition)")
+                
+                let mappedCondition = mapWeatherCondition(symbolName, temperature: avgTemp, originalCondition: originalCondition)
                 
                 let forecastDay = AlpenAuszeit.Weather(
                     date: day.date,
                     temperature: avgTemp, // Durchschnittstemperatur verwenden
-                    condition: mapWeatherCondition(symbolName, temperature: avgTemp),
+                    condition: mappedCondition,
                     location: locationName
                 )
                 forecastData.append(forecastDay)
             }
             
+            print("WeatherService: Daten erfolgreich abgerufen und umgewandelt")
             return (currentWeather, forecastData)
         } catch {
-            print("WeatherKit-Fehler: \(error.localizedDescription)")
+            print("WeatherService: Allgemeiner Fehler: \(error.localizedDescription)")
             throw error
         }
     }
     
     // Verbesserte Funktion zum Konvertieren der Apple Weather-Symbol-Namen in die eigene Enumeration
-    private func mapWeatherCondition(_ symbolName: String, temperature: Double) -> AlpenAuszeit.WeatherCondition {
+    private func mapWeatherCondition(_ symbolName: String, temperature: Double, originalCondition: String) -> AlpenAuszeit.WeatherCondition {
         // Debug-Logging für Symbol-Name
-        print("Apple Weather symbol name: \(symbolName)")
+        print("WeatherService: Apple Weather symbol name: \(symbolName), original condition: \(originalCondition)")
         
-        // Schnee nur bei Temperaturen unter 3°C zulassen
-        if temperature < 3 && (symbolName.contains("snow") || symbolName.contains("sleet") || symbolName.contains("wintry.mix") || symbolName.contains("hail")) {
+        // Direkte Zuordnung basierend auf dem Symbol-Namen
+        
+        // Schnee-Bedingung
+        if temperature < 3 && (
+            symbolName.contains("snow") ||
+            symbolName.contains("sleet") ||
+            symbolName.contains("wintry.mix") ||
+            symbolName.contains("hail")
+        ) {
             return .snowy
         }
         
-        // Erkennung sonniger Bedingungen
-        if symbolName.contains("sun.max") || symbolName.contains("clear") {
+        // Sonnige Bedingung
+        if symbolName.contains("sun.max") ||
+           symbolName.contains("clear") {
             return .sunny
         }
-        // Erkennung teilweise bewölkter Bedingungen
-        else if symbolName.contains("cloud.sun") || symbolName.contains("partly-cloudy") {
+        
+        // Teilweise bewölkt
+        if symbolName.contains("cloud.sun") ||
+           symbolName.contains("partly-cloudy") {
             return .partlyCloudy
         }
-        // Erkennung bewölkter Bedingungen
-        else if (symbolName.contains("cloud") && !symbolName.contains("rain") && !symbolName.contains("snow")) || symbolName.contains("overcast") {
+        
+        // Bewölkt
+        if (symbolName.contains("cloud") &&
+            !symbolName.contains("rain") &&
+            !symbolName.contains("snow")) ||
+            symbolName.contains("overcast") {
             return .cloudy
         }
-        // Erkennung von Regenbedingungen
-        else if symbolName.contains("rain") || symbolName.contains("drizzle") || symbolName.contains("shower") || symbolName.contains("storm") {
+        
+        // Regen
+        if symbolName.contains("rain") ||
+           symbolName.contains("drizzle") ||
+           symbolName.contains("shower") ||
+           symbolName.contains("storm") {
             return .rainy
         }
-        // Fallback für nicht zugeordnete Bedingungen
-        else {
-            print("Unbekannter Wetterzustand: \(symbolName)")
+        
+        // Analyse des Originaltextes als Fallback
+        let lowerCondition = originalCondition.lowercased()
+        
+        if lowerCondition.contains("snow") || lowerCondition.contains("schnee") {
+            return .snowy
+        }
+        
+        if lowerCondition.contains("sun") || lowerCondition.contains("clear") ||
+           lowerCondition.contains("sonn") || lowerCondition.contains("klar") {
+            return .sunny
+        }
+        
+        if lowerCondition.contains("partly") || lowerCondition.contains("teilweise") {
             return .partlyCloudy
         }
+        
+        if lowerCondition.contains("cloud") || lowerCondition.contains("overcast") ||
+           lowerCondition.contains("wolke") || lowerCondition.contains("bewölkt") {
+            return .cloudy
+        }
+        
+        if lowerCondition.contains("rain") || lowerCondition.contains("shower") ||
+           lowerCondition.contains("drizzle") || lowerCondition.contains("regen") {
+            return .rainy
+        }
+        
+        // Fallback für nicht zugeordnete Bedingungen
+        print("WeatherService: Unbekannter Wetterzustand: \(symbolName), \(originalCondition) - verwende teilweise bewölkt als Fallback")
+        return .partlyCloudy
     }
 }

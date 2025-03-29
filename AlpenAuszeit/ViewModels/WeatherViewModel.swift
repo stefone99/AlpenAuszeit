@@ -151,4 +151,50 @@ class WeatherViewModel: ObservableObject {
     func formattedDate(for weather: Weather) -> String {
         return dateFormatter.string(from: weather.date)
     }
+    
+    // In WeatherViewModel.swift einfügen:
+    func debugWeatherData() {
+        print("\n==== Vorhandene Wetterdaten Debug ====")
+        
+        if let currentWeather = currentWeather {
+            print("Aktuelles Wetter:")
+            print("- Datum: \(formattedDate(for: currentWeather))")
+            print("- Temperatur: \(currentWeather.temperature)°C")
+            print("- Bedingung: \(currentWeather.condition.description)")
+            print("- Bedingung Enum: \(currentWeather.condition)")
+            print("- Icon: \(currentWeather.condition.iconName)")
+            print("- Standort: \(currentWeather.location)")
+        } else {
+            print("Keine aktuellen Wetterdaten vorhanden")
+        }
+        
+        print("\nWettervorhersage:")
+        if weatherData.isEmpty {
+            print("Keine Wetterdaten vorhanden")
+        } else {
+            for (index, weather) in weatherData.enumerated() {
+                print("Tag \(index):")
+                print("- Datum: \(formattedDate(for: weather))")
+                print("- Temperatur: \(weather.temperature)°C")
+                print("- Bedingung: \(weather.condition.description)")
+                print("- Bedingung Enum: \(weather.condition)")
+                print("- Icon: \(weather.condition.iconName)")
+                print("- Standort: \(weather.location)")
+            }
+        }
+        
+        if isLoading {
+            print("\nStatus: Lädt Daten...")
+        } else if let error = errorMessage {
+            print("\nStatus: Fehler - \(error)")
+        } else {
+            print("\nStatus: Daten geladen")
+        }
+        
+        print("==== Ende Debug ====\n")
+    }
+
+    // Aufrufen nach dem Laden der Wetterdaten in fetchRealWeatherData:
+    // self.debugWeatherData()
+    
 }

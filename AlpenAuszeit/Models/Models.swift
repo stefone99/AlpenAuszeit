@@ -78,6 +78,46 @@ enum WeatherCondition: String {
         case .partlyCloudy: return "cloud.sun.fill"
         }
     }
+    
+    // Rückgabe eines alternativen Icons, falls erwünscht
+    func alternativeIcon(for temperature: Double) -> String {
+        switch self {
+        case .sunny:
+            return temperature > 25 ? "sun.max.fill" : "sun.max"
+        case .cloudy:
+            return "cloud.fill"
+        case .rainy:
+            return temperature < 5 ? "cloud.sleet.fill" : "cloud.rain.fill"
+        case .snowy:
+            return "cloud.snow.fill"
+        case .partlyCloudy:
+            return temperature > 25 ? "cloud.sun.fill" : "cloud.sun"
+        }
+    }
+    
+    // Statische Hilfsmethode, um aus einem WeatherKit-Symbol die richtige Bedingung abzuleiten
+    static func fromWeatherKitSymbol(_ symbolName: String, temperature: Double) -> WeatherCondition {
+        if temperature < 3 && (symbolName.contains("snow") || symbolName.contains("sleet")) {
+            return .snowy
+        }
+        
+        if symbolName.contains("sun.max") || symbolName.contains("clear") {
+            return .sunny
+        }
+        else if symbolName.contains("cloud.sun") || symbolName.contains("partly-cloudy") {
+            return .partlyCloudy
+        }
+        else if (symbolName.contains("cloud") && !symbolName.contains("rain") && !symbolName.contains("snow")) {
+            return .cloudy
+        }
+        else if symbolName.contains("rain") || symbolName.contains("drizzle") {
+            return .rainy
+        }
+        else {
+            // Fallback für unbekannte Symbole
+            return .partlyCloudy
+        }
+    }
 }
 
 // Neue Struktur für Klettersteige
