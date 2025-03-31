@@ -43,12 +43,27 @@ struct Hike: Identifiable {
     let description: String
 }
 
+// Korrigierte Weather-Struktur ohne doppelte id-Initialisierung
+
 struct Weather: Identifiable {
     let id = UUID()
     let date: Date
-    let temperature: Double
+    let temperature: Double     // Aktuelle Temperatur / oder Tageswert für Vorhersage
+    let highTemperature: Double // Höchsttemperatur
+    let lowTemperature: Double  // Niedrigsttemperatur
     let condition: WeatherCondition
     let location: String
+    
+    // Initialisierer mit Standardwerten für die neuen Felder
+    init(date: Date, temperature: Double, condition: WeatherCondition, location: String,
+         highTemperature: Double? = nil, lowTemperature: Double? = nil) {
+        self.date = date
+        self.temperature = temperature
+        self.condition = condition
+        self.location = location
+        self.highTemperature = highTemperature ?? temperature
+        self.lowTemperature = lowTemperature ?? temperature
+    }
 }
 
 enum WeatherCondition: String {

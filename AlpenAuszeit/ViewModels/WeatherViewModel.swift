@@ -60,7 +60,6 @@ class WeatherViewModel: ObservableObject {
     @MainActor
     func fetchRealWeatherData(for location: CLLocation? = nil) async {
         // Standort aus Parameter oder LocationManager verwenden
-        // Falls nichts verfügbar ist, Standardstandort (Wien) nutzen
         let locationToUse: CLLocation
         
         if let location = location {
@@ -87,13 +86,25 @@ class WeatherViewModel: ObservableObject {
             // UI-Update im Hauptthread
             print("WeatherViewModel: Wetterdaten erfolgreich abgerufen: \(current.temperature)°C, \(current.condition.description) in \(current.location)")
             self.currentWeather = current
-                
-            // Aktuelle Wetterdaten und Vorhersage kombinieren
+            
+            // Nur zukünftige Tage in der Vorhersage anzeigen
+            let calendar = Calendar.current
+            let today = calendar.startOfDay(for: Date())
+            
+            // Filtere die Vorhersagedaten, um nur Tage ab morgen anzuzeigen
+            let filteredForecast = forecast.filter {
+                calendar.startOfDay(for: $0.date) > today
+            }
+            
+            // Kombiniere aktuelles Wetter mit gefilterter Vorhersage
             var allWeatherData = [current]
-            allWeatherData.append(contentsOf: forecast)
+            allWeatherData.append(contentsOf: filteredForecast)
             self.weatherData = allWeatherData
                 
             self.isLoading = false
+            
+            // Debug-Output
+            self.debugWeatherData()
         } catch {
             // Fehler verarbeiten
             print("WeatherViewModel: Fehler bei Wetterdaten-Abfrage: \(error.localizedDescription)")
@@ -119,7 +130,9 @@ class WeatherViewModel: ObservableObject {
             date: today,
             temperature: 15.5,
             condition: .partlyCloudy,
-            location: "Fehlende Daten"
+            location: "Fehlende Daten",
+            highTemperature: 18.0,
+            lowTemperature: 12.0
         )
         
         var allWeatherData = [currentWeather]
@@ -130,14 +143,18 @@ class WeatherViewModel: ObservableObject {
                 // Zufällige Wetterdaten für die Demo
                 let conditions: [WeatherCondition] = [.sunny, .partlyCloudy, .cloudy, .rainy, .snowy]
                 let randomCondition = conditions[Int.random(in: 0..<conditions.count)]
-                let randomTemp = Double.random(in: 10...25)
+                
+                let randomHigh = Double.random(in: 16...28)
+                let randomLow = Double.random(in: 8...15)
                 
                 allWeatherData.append(
                     Weather(
                         date: futureDate,
-                        temperature: randomTemp,
+                        temperature: randomHigh, // Hauptwert ist die Höchsttemperatur
                         condition: randomCondition,
-                        location: "Fehlende Daten"
+                        location: "Fehlende Daten",
+                        highTemperature: randomHigh,
+                        lowTemperature: randomLow
                     )
                 )
             }
@@ -152,14 +169,16 @@ class WeatherViewModel: ObservableObject {
         return dateFormatter.string(from: weather.date)
     }
     
-    // In WeatherViewModel.swift einfügen:
+    // Debug-Funktion zur Anzeige der Wetterdaten
     func debugWeatherData() {
         print("\n==== Vorhandene Wetterdaten Debug ====")
         
         if let currentWeather = currentWeather {
             print("Aktuelles Wetter:")
             print("- Datum: \(formattedDate(for: currentWeather))")
-            print("- Temperatur: \(currentWeather.temperature)°C")
+            print("- Aktuelle Temperatur: \(currentWeather.temperature)°C")
+            print("- Höchsttemperatur: \(currentWeather.highTemperature)°C")
+            print("- Tiefsttemperatur: \(currentWeather.lowTemperature)°C")
             print("- Bedingung: \(currentWeather.condition.description)")
             print("- Bedingung Enum: \(currentWeather.condition)")
             print("- Icon: \(currentWeather.condition.iconName)")
@@ -173,13 +192,17 @@ class WeatherViewModel: ObservableObject {
             print("Keine Wetterdaten vorhanden")
         } else {
             for (index, weather) in weatherData.enumerated() {
-                print("Tag \(index):")
-                print("- Datum: \(formattedDate(for: weather))")
-                print("- Temperatur: \(weather.temperature)°C")
-                print("- Bedingung: \(weather.condition.description)")
-                print("- Bedingung Enum: \(weather.condition)")
-                print("- Icon: \(weather.condition.iconName)")
-                print("- Standort: \(weather.location)")
+                if index > 0 { // Erstes Element ist aktuelles Wetter
+                    print("Tag \(index):")
+                    print("- Datum: \(formattedDate(for: weather))")
+                    print("- Haupttemperatur: \(weather.temperature)°C")
+                    print("- Höchsttemperatur: \(weather.highTemperature)°C")
+                    print("- Tiefsttemperatur: \(weather.lowTemperature)°C")
+                    print("- Bedingung: \(weather.condition.description)")
+                    print("- Bedingung Enum: \(weather.condition)")
+                    print("- Icon: \(weather.condition.iconName)")
+                    print("- Standort: \(weather.location)")
+                }
             }
         }
         
@@ -193,8 +216,4 @@ class WeatherViewModel: ObservableObject {
         
         print("==== Ende Debug ====\n")
     }
-
-    // Aufrufen nach dem Laden der Wetterdaten in fetchRealWeatherData:
-    // self.debugWeatherData()
-    
 }

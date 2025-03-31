@@ -17,25 +17,39 @@ struct WeatherForecastCard: View {
                 .shadow(radius: 3)
             
             VStack(spacing: 8) {
+                // Datum
                 Text(viewModel.formattedDate(for: weather))
                     .font(.caption)
                     .foregroundColor(.white)
                 
+                // Wettericon
                 Image(systemName: weather.condition.rawValue)
                     .font(.system(size: 30))
                     .foregroundColor(.white)
                 
-                Text("\(Int(weather.temperature))°C")
+                // Wetterbeschreibung
+                Text(weather.condition.description)
+                    .font(.caption)
+                    .foregroundColor(.white.opacity(0.9))
+                    .lineLimit(1)
+                
+                Spacer()
+                    .frame(height: 4)
+                
+                // Haupttemperatur (Höchsttemperatur)
+                Text("\(Int(weather.highTemperature))°")
                     .font(.headline)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                 
-                Text(weather.condition.description)
+                // Niedrigsttemperatur
+                Text("\(Int(weather.lowTemperature))°")
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.9))
             }
-            .padding()
+            .padding(.vertical, 12)
+            .padding(.horizontal, 8)
         }
-        .frame(width: 120, height: 150)
+        .frame(width: 100, height: 150)
     }
 }

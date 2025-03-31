@@ -40,30 +40,36 @@ class WeatherService {
                 print("WeatherService: Geocoding-Fehler: \(error.localizedDescription)")
             }
             
-            // Aktuelle Wetterdaten extrahieren mit detailliertem Logging
-            let temp = currentWeatherData.currentWeather.temperature
-            let tempValue = temp.value
-            let tempUnit = temp.unit
+            // Aktuelle Wetterdaten extrahieren
+            let temp = currentWeatherData.currentWeather.temperature.value
             let symbolName = currentWeatherData.currentWeather.symbolName
             
             // Debug-Ausgabe der empfangenen Wetterdaten
             print("WeatherService: Aktuelle Wetterdaten empfangen:")
-            print("- Temperatur: \(tempValue) \(tempUnit)")
+            print("- Temperatur: \(temp)")
             print("- Symbol: \(symbolName)")
             print("- Standort: \(locationName)")
-            print("- Bedingung: \(currentWeatherData.currentWeather.condition.description)")
-            print("- Luftfeuchtigkeit: \(currentWeatherData.currentWeather.humidity)")
-            print("- Wind: \(currentWeatherData.currentWeather.wind.speed)")
             
-            let condition = mapWeatherCondition(symbolName, temperature: tempValue, originalCondition: currentWeatherData.currentWeather.condition.description)
+            let condition = mapWeatherCondition(symbolName, temperature: temp, originalCondition: currentWeatherData.currentWeather.condition.description)
             
-            print("WeatherService: Gemappte Wetterbedingung: \(condition.description)")
+            // Für aktuelle Wetterdaten - versuche, die Tagesvorhersage für heute zu finden,
+            // um Höchst-/Tiefsttemperaturen zu erhalten
+            var todayHigh = temp
+            var todayLow = temp
+            
+            if let todayForecast = dailyForecast.forecast.first {
+                todayHigh = todayForecast.highTemperature.value
+                todayLow = todayForecast.lowTemperature.value
+                print("WeatherService: Heute - Min: \(todayLow), Max: \(todayHigh)")
+            }
             
             let currentWeather = AlpenAuszeit.Weather(
                 date: Date(),
-                temperature: tempValue,
+                temperature: temp,
                 condition: condition,
-                location: locationName
+                location: locationName,
+                highTemperature: todayHigh,
+                lowTemperature: todayLow
             )
             
             // Tagesvorhersage für die nächsten 5 Tage
@@ -71,26 +77,27 @@ class WeatherService {
             
             // Tagesvorhersage abfragen und umwandeln
             for day in dailyForecast.forecast.prefix(5) {
-                let highTemp = day.highTemperature
-                let lowTemp = day.lowTemperature
-                let avgTemp = (highTemp.value + lowTemp.value) / 2
+                let highTemp = day.highTemperature.value
+                let lowTemp = day.lowTemperature.value
                 let symbolName = day.symbolName
                 let originalCondition = day.condition.description
                 
                 // Debug-Ausgabe für jeden Vorhersagetag
                 print("WeatherService: Vorhersage für \(day.date):")
-                print("- Min: \(lowTemp.value) \(lowTemp.unit)")
-                print("- Max: \(highTemp.value) \(highTemp.unit)")
+                print("- Min: \(lowTemp)")
+                print("- Max: \(highTemp)")
                 print("- Symbol: \(symbolName)")
                 print("- Bedingung: \(originalCondition)")
                 
-                let mappedCondition = mapWeatherCondition(symbolName, temperature: avgTemp, originalCondition: originalCondition)
+                let mappedCondition = mapWeatherCondition(symbolName, temperature: highTemp, originalCondition: originalCondition)
                 
                 let forecastDay = AlpenAuszeit.Weather(
                     date: day.date,
-                    temperature: avgTemp, // Durchschnittstemperatur verwenden
+                    temperature: highTemp, // Verwende Höchsttemperatur als Hauptwert
                     condition: mappedCondition,
-                    location: locationName
+                    location: locationName,
+                    highTemperature: highTemp,
+                    lowTemperature: lowTemp
                 )
                 forecastData.append(forecastDay)
             }
@@ -108,39 +115,30 @@ class WeatherService {
         // Debug-Logging für Symbol-Name
         print("WeatherService: Apple Weather symbol name: \(symbolName), original condition: \(originalCondition)")
         
-        // Direkte Zuordnung basierend auf dem Symbol-Namen
+        // Spezifischere Bedingungs-Zuordnungen
         
-        // Schnee-Bedingung
-        if temperature < 3 && (
+        // Snow Conditions
+        if (temperature < 3 && (
             symbolName.contains("snow") ||
             symbolName.contains("sleet") ||
-            symbolName.contains("wintry.mix") ||
-            symbolName.contains("hail")
-        ) {
+            symbolName.contains("wintry.mix")
+        )) || symbolName.contains("snow") {
             return .snowy
         }
         
-        // Sonnige Bedingung
+        // Sunny/Clear Conditions
         if symbolName.contains("sun.max") ||
            symbolName.contains("clear") {
             return .sunny
         }
         
-        // Teilweise bewölkt
+        // Partly Cloudy
         if symbolName.contains("cloud.sun") ||
            symbolName.contains("partly-cloudy") {
             return .partlyCloudy
         }
         
-        // Bewölkt
-        if (symbolName.contains("cloud") &&
-            !symbolName.contains("rain") &&
-            !symbolName.contains("snow")) ||
-            symbolName.contains("overcast") {
-            return .cloudy
-        }
-        
-        // Regen
+        // Rain Conditions
         if symbolName.contains("rain") ||
            symbolName.contains("drizzle") ||
            symbolName.contains("shower") ||
@@ -148,7 +146,12 @@ class WeatherService {
             return .rainy
         }
         
-        // Analyse des Originaltextes als Fallback
+        // Cloudy, allgemeinere Bedingung erst zum Schluss prüfen
+        if symbolName.contains("cloud") {
+            return .cloudy
+        }
+        
+        // Textbasierte Analyse für Fallback
         let lowerCondition = originalCondition.lowercased()
         
         if lowerCondition.contains("snow") || lowerCondition.contains("schnee") {
@@ -164,14 +167,13 @@ class WeatherService {
             return .partlyCloudy
         }
         
-        if lowerCondition.contains("cloud") || lowerCondition.contains("overcast") ||
-           lowerCondition.contains("wolke") || lowerCondition.contains("bewölkt") {
-            return .cloudy
+        if lowerCondition.contains("rain") || lowerCondition.contains("shower") ||
+           lowerCondition.contains("regen") {
+            return .rainy
         }
         
-        if lowerCondition.contains("rain") || lowerCondition.contains("shower") ||
-           lowerCondition.contains("drizzle") || lowerCondition.contains("regen") {
-            return .rainy
+        if lowerCondition.contains("cloud") || lowerCondition.contains("bewölkt") {
+            return .cloudy
         }
         
         // Fallback für nicht zugeordnete Bedingungen
