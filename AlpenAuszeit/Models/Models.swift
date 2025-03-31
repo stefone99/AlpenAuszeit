@@ -1,7 +1,7 @@
 import SwiftUI
 import MapKit
 
-struct Hotel: Identifiable {
+struct Hotel: Identifiable, Equatable {
     let id = UUID()
     let name: String
     let location: String
@@ -13,6 +13,11 @@ struct Hotel: Identifiable {
     let mapLink: URL
     let images: [String]
     let coordinates: CLLocationCoordinate2D
+    
+    // Implementierung von Equatable
+    static func == (lhs: Hotel, rhs: Hotel) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 struct Trip: Identifiable {

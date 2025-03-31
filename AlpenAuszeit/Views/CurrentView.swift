@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocation
 
 // Aktuell View
 struct CurrentView: View {
@@ -34,8 +35,8 @@ struct CurrentView: View {
                         .padding(.horizontal)
                 }
                 
-                // Zufällige Wien-Aktivität
-                if let activity = randomActivity {
+                // Zufällige Wien-Aktivität (nur wenn das aktuelle Hotel in Wien ist)
+                if let currentHotel = hotelViewModel.currentHotel, currentHotel.location == "Wien", let activity = randomActivity {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Entdecke Wien")
                             .font(.headline)
@@ -132,11 +133,17 @@ struct CurrentView: View {
                     }
                 }
                 
-                // Wetter-Status-Anzeige
+                // Wetter-Status-Anzeige mit dem Standort des aktuellen Hotels
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
-                        Text("Aktuelles Wetter Wien")
-                            .font(.headline)
+                        // Wetterüberschrift mit dem Namen des aktuellen Standorts
+                        if let currentHotel = hotelViewModel.currentHotel {
+                            Text("Aktuelles Wetter \(currentHotel.location)")
+                                .font(.headline)
+                        } else {
+                            Text("Aktuelles Wetter")
+                                .font(.headline)
+                        }
                         
                         Spacer()
                         
@@ -160,11 +167,18 @@ struct CurrentView: View {
                     }
                 }
                 
-                // Wettervorhersage
+                // Wettervorhersage für den aktuellen Standort
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Wettervorhersage Wien")
-                        .font(.headline)
-                        .padding(.horizontal)
+                    // Überschrift mit dem Namen des aktuellen Standorts
+                    if let currentHotel = hotelViewModel.currentHotel {
+                        Text("Wettervorhersage \(currentHotel.location)")
+                            .font(.headline)
+                            .padding(.horizontal)
+                    } else {
+                        Text("Wettervorhersage")
+                            .font(.headline)
+                            .padding(.horizontal)
+                    }
                     
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 15) {
@@ -190,6 +204,7 @@ struct CurrentView: View {
                                 // Echte Vorhersagedaten anzeigen
                                 ForEach(weatherViewModel.weatherData.dropFirst()) { weather in
                                     WeatherForecastCard(weather: weather, viewModel: weatherViewModel)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
                             }
                         }
@@ -200,13 +215,15 @@ struct CurrentView: View {
             .padding(.vertical)
         }
         .onAppear {
-            // Bei jedem Erscheinen der View sofort Wetterdaten laden mit dem vorhandenen Standort
-            Task {
-                // Immer einen gültigen Standort haben, dank des verbesserten LocationManagers
-                let location = locationManager.getCurrentOrDefaultLocation()
-                print("CurrentView: onAppear - Lade Wetterdaten für Standort: \(location.coordinate.latitude), \(location.coordinate.longitude)")
-                await weatherViewModel.fetchRealWeatherData(for: location)
-            }
+            // Bei jedem Erscheinen der View Wetterdaten basierend auf aktuellem Hotel laden
+            updateWeatherForCurrentHotel()
+            
+            // Zufällige Aktivität auswählen
+            selectRandomActivity()
+        }
+        .onChange(of: hotelViewModel.currentHotel?.id) {
+            // Wetterdaten aktualisieren, wenn sich das aktuelle Hotel ändert
+            updateWeatherForCurrentHotel()
             
             // Zufällige Aktivität auswählen
             selectRandomActivity()
@@ -217,6 +234,30 @@ struct CurrentView: View {
     private func selectRandomActivity() {
         if !viennaActivityViewModel.activities.isEmpty {
             randomActivity = viennaActivityViewModel.activities.randomElement()
+        }
+    }
+    
+    // Wetteraktualisierung basierend auf dem aktuellen Hotel
+    private func updateWeatherForCurrentHotel() {
+        if let currentHotel = hotelViewModel.currentHotel {
+            // Erstelle einen CLLocation aus den Koordinaten des Hotels
+            let hotelLocation = CLLocation(
+                latitude: currentHotel.coordinates.latitude,
+                longitude: currentHotel.coordinates.longitude
+            )
+            
+            // Wetterdaten für den Hotelstandort laden
+            Task {
+                print("CurrentView: Lade Wetterdaten für Hotelstandort: \(currentHotel.location)")
+                await weatherViewModel.fetchRealWeatherData(for: hotelLocation)
+            }
+        } else {
+            // Fallback auf den aktuellen Standort des Benutzers
+            Task {
+                let location = locationManager.getCurrentOrDefaultLocation()
+                print("CurrentView: Kein Hotel gefunden, lade Wetterdaten für aktuellen Standort")
+                await weatherViewModel.fetchRealWeatherData(for: location)
+            }
         }
     }
 }

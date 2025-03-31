@@ -4,6 +4,7 @@ import MapKit
 class HotelViewModel: ObservableObject {
     @Published var hotels: [Hotel] = []
     @Published var currentHotel: Hotel?
+    @Published var simulatedDate: Date? // Neues Property für simuliertes Datum
     
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -89,11 +90,36 @@ class HotelViewModel: ObservableObject {
         ]
     }
     
+    // Aktualisierte Methode, die entweder das simulierte oder das aktuelle Datum verwendet
     func updateCurrentHotel() {
-        let today = Date()
+        // Verwende simuliertes Datum, wenn vorhanden, sonst aktuelles Datum
+        let today = simulatedDate ?? Date()
+        
+        print("HotelViewModel: Aktualisiere aktuelles Hotel für Datum: \(formattedDate(from: today))")
+        
         currentHotel = hotels.first(where: {
             today >= $0.checkIn && today <= $0.checkOut
         }) ?? hotels.first
+        
+        if let selectedHotel = currentHotel {
+            print("HotelViewModel: Ausgewähltes Hotel: \(selectedHotel.name) in \(selectedHotel.location)")
+        } else {
+            print("HotelViewModel: Kein passendes Hotel gefunden, verwende erstes Hotel")
+        }
+    }
+    
+    // Neue Methode, um ein bestimmtes Datum zu simulieren
+    func simulateDate(_ date: Date) {
+        print("HotelViewModel: Simuliere Datum: \(formattedDate(from: date))")
+        simulatedDate = date
+        updateCurrentHotel()
+    }
+    
+    // Neue Methode, um die Simulation zurückzusetzen
+    func resetSimulation() {
+        print("HotelViewModel: Setze Simulation zurück auf aktuelles Datum")
+        simulatedDate = nil
+        updateCurrentHotel()
     }
     
     func formattedDateRange(for hotel: Hotel) -> String {

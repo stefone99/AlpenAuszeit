@@ -87,10 +87,11 @@ struct HotelDetailView: View {
                             .font(.headline)
                         
                         // Verbesserte Kartenansicht mit Interaktionen
-                        EnhancedMapView(
-                            coordinates: hotel.coordinates,
-                            title: hotel.name
-                        )
+                                                EnhancedMapView(
+                                                    coordinates: hotel.coordinates,
+                                                    title: hotel.name,
+                                                    location: hotel.location
+                                                )
                         
                         // Button für Wien-Aktivitäten (nur anzeigen, wenn das Hotel in Wien ist)
                         if hotel.location == "Wien" {

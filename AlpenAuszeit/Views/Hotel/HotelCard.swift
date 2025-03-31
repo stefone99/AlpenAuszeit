@@ -4,7 +4,6 @@ import MapKit
 struct HotelCard: View {
     let hotel: Hotel
     @ObservedObject var viewModel: HotelViewModel
-    @State private var showingMapSheet = false
     
     var body: some View {
         ZStack {
@@ -56,41 +55,6 @@ struct HotelCard: View {
                     }
                     .font(.caption)
                     .foregroundColor(.secondary)
-                    
-                    Button(action: {
-                        showingMapSheet = true
-                    }) {
-                        HStack {
-                            Image(systemName: "map")
-                            Text("Auf Karte anzeigen")
-                        }
-                        .font(.caption)
-                        .foregroundColor(.blue)
-                    }
-                    .sheet(isPresented: $showingMapSheet) {
-                        VStack {
-                            HStack {
-                                Text(hotel.name)
-                                    .font(.headline)
-                                
-                                Spacer()
-                                
-                                Button(action: {
-                                    showingMapSheet = false
-                                }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                            .padding()
-                            
-                            EnhancedMapView(
-                                coordinates: hotel.coordinates,
-                                title: hotel.name
-                            )
-                            .padding(.horizontal)
-                        }
-                    }
                 }
                 .padding(.horizontal, 10)
                 .padding(.bottom, 10)
