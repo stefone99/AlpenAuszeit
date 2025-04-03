@@ -20,17 +20,51 @@ struct UIKitTabViewController: UIViewControllerRepresentable {
             )
         }
         
+        // Farbverlauf für die TabBar erstellen - gleicher Farbverlauf wie in Wetterkacheln
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 49) // Standard TabBar-Höhe
+        gradientLayer.colors = [
+            UIColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.6).cgColor, // Blau mit 60% Deckkraft
+            UIColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.3).cgColor  // Blau mit 30% Deckkraft
+        ]
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.0) // Horizontaler Verlauf
+        
+        // Konvertiere den Farbverlauf in ein Bild
+        UIGraphicsBeginImageContext(gradientLayer.bounds.size)
+        if let context = UIGraphicsGetCurrentContext() {
+            gradientLayer.render(in: context)
+            let gradientImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            // Setze das Bild als Hintergrund der TabBar
+            tabBarController.tabBar.backgroundImage = gradientImage
+        }
+        
+        // Text und Icons in weiß für bessere Sichtbarkeit
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white.withAlphaComponent(0.7)], for: .normal)
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: .selected)
+        
         // Auf iPadOS spezifisch Einstellungen erzwingen
         if UIDevice.current.userInterfaceIdiom == .pad {
-            tabBarController.tabBar.isTranslucent = true
+            tabBarController.tabBar.isTranslucent = false // Wichtig für Gradient
             
             if #available(iOS 15.0, *) {
                 let appearance = UITabBarAppearance()
-                appearance.configureWithDefaultBackground()
+                appearance.configureWithOpaqueBackground()
+                
+                // Hintergrundbild für die TabBar-Erscheinung
+                if let gradientImage = tabBarController.tabBar.backgroundImage {
+                    appearance.backgroundImage = gradientImage
+                }
                 
                 // Forciere Icons und Text wie beim iPhone
-                appearance.stackedLayoutAppearance.normal.iconColor = .gray
-                appearance.stackedLayoutAppearance.selected.iconColor = tintColor
+                appearance.stackedLayoutAppearance.normal.iconColor = .white
+                appearance.stackedLayoutAppearance.selected.iconColor = .white
+                
+                // Textfarbe anpassen
+                appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white.withAlphaComponent(0.7)]
+                appearance.stackedLayoutAppearance.selected.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
                 
                 tabBarController.tabBar.standardAppearance = appearance
                 tabBarController.tabBar.scrollEdgeAppearance = appearance
@@ -65,7 +99,36 @@ struct ContentView: View {
         // Entferne den grauen Hintergrund der TabBar im iOS 15+
         if #available(iOS 15.0, *) {
             let appearance = UITabBarAppearance()
-            appearance.configureWithDefaultBackground()
+            appearance.configureWithOpaqueBackground()
+            
+            // Erstelle ein Bild mit Farbverlauf - gleicher Farbverlauf wie in Wetterkacheln
+            let renderer = UIGraphicsImageRenderer(size: CGSize(width: UIScreen.main.bounds.width, height: 49))
+            let gradientImage = renderer.image { context in
+                let colors = [
+                    UIColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.6).cgColor, // Blau mit 60% Deckkraft
+                    UIColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.3).cgColor  // Blau mit 30% Deckkraft
+                ]
+                let colorSpace = CGColorSpaceCreateDeviceRGB()
+                let colorLocations: [CGFloat] = [0.0, 1.0]
+                
+                if let gradient = CGGradient(colorsSpace: colorSpace, colors: colors as CFArray, locations: colorLocations) {
+                    context.cgContext.drawLinearGradient(
+                        gradient,
+                        start: CGPoint(x: 0, y: 0),
+                        end: CGPoint(x: UIScreen.main.bounds.width, y: 0),
+                        options: []
+                    )
+                }
+            }
+            
+            appearance.backgroundImage = gradientImage
+            
+            // Text- und Symbolfarben anpassen
+            appearance.stackedLayoutAppearance.normal.iconColor = .white
+            appearance.stackedLayoutAppearance.selected.iconColor = .white
+            appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white.withAlphaComponent(0.7)]
+            appearance.stackedLayoutAppearance.selected.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            
             UITabBar.appearance().standardAppearance = appearance
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }
@@ -149,7 +212,11 @@ struct ContentView: View {
                 Text("Klettersteige")
             }
         }
-        .accentColor(.blue)
+        .accentColor(.white) // Ausgewählte Tab-Icons in weiß
+        .onAppear {
+            // Unausgewählte Tab-Icons und Text
+            UITabBar.appearance().unselectedItemTintColor = UIColor.white.withAlphaComponent(0.7)
+        }
     }
     
     // iPad-spezifische TabView mit UIKit
@@ -198,7 +265,7 @@ struct ContentView: View {
                 ("Wanderungen", UIImage(systemName: "mountain.2")!),
                 ("Klettersteige", UIImage(systemName: "figure.climbing")!)
             ],
-            tintColor: UIColor.systemBlue
+            tintColor: UIColor.white // Ausgewählte Tab-Icons in weiß
         )
         .ignoresSafeArea(.all) // Volle Bildschirmnutzung
     }

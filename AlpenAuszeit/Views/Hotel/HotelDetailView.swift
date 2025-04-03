@@ -87,11 +87,11 @@ struct HotelDetailView: View {
                             .font(.headline)
                         
                         // Verbesserte Kartenansicht mit Interaktionen
-                                                EnhancedMapView(
-                                                    coordinates: hotel.coordinates,
-                                                    title: hotel.name,
-                                                    location: hotel.location
-                                                )
+                        EnhancedMapView(
+                            coordinates: hotel.coordinates,
+                            title: hotel.name,
+                            location: hotel.location
+                        )
                         
                         // Button für Wien-Aktivitäten (nur anzeigen, wenn das Hotel in Wien ist)
                         if hotel.location == "Wien" {
@@ -124,6 +124,7 @@ struct HotelDetailView: View {
         }
         .navigationTitle("Hoteldetails")
         .navigationBarTitleDisplayMode(.inline)
+        .blackBackButton() // Hier wird der schwarze Zurück-Button angewendet
     }
 }
 
