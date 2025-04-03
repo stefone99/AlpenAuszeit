@@ -134,5 +134,6 @@ struct TripDetailView: View {
         }
         .navigationTitle("Fahrtverlauf")
         .navigationBarTitleDisplayMode(.inline)
+        .blackBackButton()  // Hinzugefügt für schwarzen Zurück-Button
     }
 }

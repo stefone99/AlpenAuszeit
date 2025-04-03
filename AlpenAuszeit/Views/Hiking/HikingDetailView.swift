@@ -67,6 +67,7 @@ struct HikingDetailView: View {
         }
         .navigationTitle("Wanderdetails")
         .navigationBarTitleDisplayMode(.inline)
+        .blackBackButton()  // Hinzugefügt für schwarzen Zurück-Button
     }
 }
 
@@ -80,6 +81,7 @@ struct BergfexFullView: View {
             .edgesIgnoringSafeArea(.bottom)
             .navigationTitle("Bergfex: \(hikeName)")
             .navigationBarTitleDisplayMode(.inline)
+            .blackBackButton()  // Hinzugefügt für schwarzen Zurück-Button
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     HStack {

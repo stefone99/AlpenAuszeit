@@ -124,7 +124,7 @@ struct HotelDetailView: View {
         }
         .navigationTitle("Hoteldetails")
         .navigationBarTitleDisplayMode(.inline)
-        .blackBackButton() // Hier wird der schwarze Zurück-Button angewendet
+        .blackBackButton() // Schwarzer Zurück-Button
     }
 }
 

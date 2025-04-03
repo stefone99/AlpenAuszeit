@@ -163,6 +163,9 @@ struct ContentView: View {
     }
     
     // Standard SwiftUI TabView für iPhone
+    // In ContentView.swift - standardTabView-Variable aktualisieren
+
+    // Standard SwiftUI TabView für iPhone
     private var standardTabView: some View {
         TabView {
             NavigationView {
@@ -214,8 +217,45 @@ struct ContentView: View {
         }
         .accentColor(.white) // Ausgewählte Tab-Icons in weiß
         .onAppear {
-            // Unausgewählte Tab-Icons und Text
+            // Setze TabBar-Farben - dies sollte konsistent sein und nicht überschrieben werden
             UITabBar.appearance().unselectedItemTintColor = UIColor.white.withAlphaComponent(0.7)
+            
+            // Verwende das gleiche Setup wie im init() von ContentView
+            if #available(iOS 15.0, *) {
+                let appearance = UITabBarAppearance()
+                appearance.configureWithOpaqueBackground()
+                
+                // Erstelle ein Bild mit Farbverlauf - gleicher Farbverlauf wie in Wetterkacheln
+                let renderer = UIGraphicsImageRenderer(size: CGSize(width: UIScreen.main.bounds.width, height: 49))
+                let gradientImage = renderer.image { context in
+                    let colors = [
+                        UIColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.6).cgColor, // Blau mit 60% Deckkraft
+                        UIColor(red: 0.0, green: 0.5, blue: 1.0, alpha: 0.3).cgColor  // Blau mit 30% Deckkraft
+                    ]
+                    let colorSpace = CGColorSpaceCreateDeviceRGB()
+                    let colorLocations: [CGFloat] = [0.0, 1.0]
+                    
+                    if let gradient = CGGradient(colorsSpace: colorSpace, colors: colors as CFArray, locations: colorLocations) {
+                        context.cgContext.drawLinearGradient(
+                            gradient,
+                            start: CGPoint(x: 0, y: 0),
+                            end: CGPoint(x: UIScreen.main.bounds.width, y: 0),
+                            options: []
+                        )
+                    }
+                }
+                
+                appearance.backgroundImage = gradientImage
+                
+                // Text- und Symbolfarben anpassen
+                appearance.stackedLayoutAppearance.normal.iconColor = .white
+                appearance.stackedLayoutAppearance.selected.iconColor = .white
+                appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white.withAlphaComponent(0.7)]
+                appearance.stackedLayoutAppearance.selected.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+                
+                UITabBar.appearance().standardAppearance = appearance
+                UITabBar.appearance().scrollEdgeAppearance = appearance
+            }
         }
     }
     

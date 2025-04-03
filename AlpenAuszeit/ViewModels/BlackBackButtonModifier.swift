@@ -1,6 +1,7 @@
 import SwiftUI
 
-// ViewModifier nur für die Detail-Ansichten, die den Zurück-Pfeil schwarz machen
+// Vereinfachter ViewModifier, der NUR den Zurück-Pfeil schwarz macht
+// ohne andere UI-Elemente zu beeinflussen
 struct BlackBackButtonModifier: ViewModifier {
     @Environment(\.presentationMode) var presentationMode
     

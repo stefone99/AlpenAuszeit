@@ -37,7 +37,6 @@ struct HotelListView: View {
                     
                     Text("Tippen Sie auf ein Hotel für weitere Informationen")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
                         .padding(.horizontal)
                         .foregroundColor(Color.black)
                         .padding(.top, 90)

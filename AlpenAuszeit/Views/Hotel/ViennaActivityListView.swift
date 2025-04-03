@@ -43,6 +43,7 @@ struct ViennaActivityListView: View {
         }
         .navigationTitle("Aktivitäten in Wien")
         .navigationBarTitleDisplayMode(.inline)
+        .blackBackButton()  // Hinzugefügt für schwarzen Zurück-Button
     }
 }
 

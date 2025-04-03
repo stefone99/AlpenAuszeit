@@ -138,6 +138,7 @@ struct ClimbingDetailView: View {
         }
         .navigationTitle("Klettersteig Details")
         .navigationBarTitleDisplayMode(.inline)
+        .blackBackButton()  // Hinzugefügt für schwarzen Zurück-Button
     }
 }
 
@@ -159,6 +160,8 @@ struct InfoColumnView: View {
     }
 }
 
+// In ClimbingDetailView.swift - die TopoDetailView muss angepasst werden:
+
 // Eigenständige Topo-Detailansicht
 struct TopoDetailView: View {
     let imageURL: URL
@@ -167,6 +170,7 @@ struct TopoDetailView: View {
     @State private var lastScale: CGFloat = 1.0
     @State private var offset: CGSize = .zero
     @State private var lastOffset: CGSize = .zero
+    @Environment(\.presentationMode) private var presentationMode  // Hinzugefügt, um den Zurück-Button zu steuern
     
     var body: some View {
         GeometryReader { geometry in
@@ -240,6 +244,19 @@ struct TopoDetailView: View {
                     Text("Topo Ansicht")
                 }
                 .foregroundColor(.white)
+            }
+            
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    HStack {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.black)
+                        Text("Zurück")
+                            .foregroundColor(.black)
+                    }
+                }
             }
         }
         .toolbarColorScheme(.dark, for: .navigationBar)

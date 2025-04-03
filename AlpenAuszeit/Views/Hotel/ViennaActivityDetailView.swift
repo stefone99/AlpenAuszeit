@@ -94,6 +94,7 @@ struct ViennaActivityDetailView: View {
         .edgesIgnoringSafeArea(.top)
         .navigationTitle(activity.name)
         .navigationBarTitleDisplayMode(.inline)
+        .blackBackButton()  // Hinzugefügt für schwarzen Zurück-Button
     }
     
     // Funktion zum Öffnen von Google Maps mit dem Aktivitätsnamen und "Wien"
